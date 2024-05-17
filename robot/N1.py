@@ -32,10 +32,10 @@ def CogePieza(Pieza,rtde_c,rtde_r):
         rtde_c.moveL(target, 0.05, 0.05, True)
         time.sleep(4)
         CloseGripper()
-        
         time.sleep(1)
         target[2] += 0.07
         rtde_c.moveL(target, 0.05, 0.05, True)
         time.sleep(4)
         rtde_c.moveJ(Cerca_Piez_radian, 0.5, 0.2) #Posición Cerca_Constr
+#7,11, 13, 17se da. 16 está mal puesta4
 
