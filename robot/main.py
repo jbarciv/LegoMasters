@@ -176,7 +176,7 @@ def get_legos_matrix(img):
         ilego = []
         for i in range(len(xlegos)):
             x, _, _, _ = xlegos[i]
-            if (abs(x - x_ref) <= 10):
+            if (abs(x - x_ref) <= 35):
                 ilego.append(i)
         for i in ilego:      
             lego = xlegos[i]
@@ -208,7 +208,7 @@ def get_legos_matrix(img):
         ilego = []
         for i in range(len(ylegos)):
             _, y, _, _, _ = ylegos[i]
-            if (abs(y - y_ref) <= 6):
+            if (abs(y - y_ref) <= 25):
                 ilego.append(i)
         for i in ilego:      
             lego = ylegos[i]
@@ -231,35 +231,35 @@ def get_legos_matrix(img):
             legos.append(legos_y[i][j])
     colors = {
         'blue': {
-            'rgb': [[13, 177, 200], [69, 187, 212],[39,175,200], [58, 188, 213], [78, 199, 234], [5, 157, 189]],
+            'rgb': [[13, 177, 200], [69, 187, 212],[39,175,200], [58, 188, 213], [78, 199, 234], [5, 157, 189], [37, 237, 253], [37, 229, 253], [45, 200, 237], [45, 192, 222], [56, 213, 253], [14, 215, 251], [18, 209, 250], [32, 205, 248], [24, 196, 234], [13, 197, 235], [2, 204, 251]],
             'hsv': [[193.3, 77.6, 98.04], [193.398, 58.19, 69.41]]},
         # 'light_blue': {
         #     'rgb': [191, 228, 231], 
         #     'hsv': [92, 44, 231]},
         'white': {
-            'rgb': [[206, 209, 208], [218, 215, 210], [243, 237, 231], [245, 244, 250], [192, 198, 200]],
+            'rgb': [[206, 209, 208], [218, 215, 210], [243, 237, 231], [245, 244, 250], [192, 198, 200], [252, 255, 250]],
             'hsv': [[65.4545, 4.3137, 100.0000],[37.5000, 3.6866, 85.0980]]},
         'red': {
-            'rgb': [[191, 62, 59], [169, 26, 26], [244, 50, 43], [190, 38, 33], [180, 28, 17], [168, 38, 33], [209, 55, 49], [194, 45, 47]],
+            'rgb': [[191, 62, 59], [169, 26, 26], [244, 50, 43], [190, 38, 33], [180, 28, 17], [168, 38, 33], [209, 55, 49], [194, 45, 47], [241, 37, 24], [200, 22, 19], [217, 47, 27], [207, 34, 15], [224, 45, 44], [223, 28, 27], [212, 18, 14]],
             'hsv': [[2.0690, 84.2324, 94.5098], [1.7021, 85.4545, 64.7059]]},
         # 'light_red': {
         #     'rgb': [253, 132, 126], 
         #     'hsv': [1, 128, 253]},
         'orange': {
-            'rgb': [[252, 129, 21], [246, 116, 16], [230, 112, 23]],
+            'rgb': [[252, 129, 21], [246, 116, 16], [230, 112, 23], [254, 172, 21], [252, 123, 2], [254, 161, 8], [252, 142, 4], [252, 145, 20], [252, 148, 31]],
             'hsv': [[26.2722, 66.2745, 100.0000], [24.6729, 91.0638, 92.1569]]},
         'green': {
-            'rgb': [[158, 181, 57], [152, 168, 48], [162, 184, 79]],
+            'rgb': [[158, 181, 57], [152, 168, 48], [162, 184, 79], [205, 233, 78], [197, 224, 81], [190, 207, 66], [176, 191, 46], [187, 202, 60], [202, 216, 51], [189, 204, 44], [172, 200, 64], [169, 198, 59]],
             'hsv': [[63.8961, 38.6935, 78.0392], [69.8824, 68.0000, 49.0196]]},
         # 'light_green': {
         #     'rgb': [213, 232, 163], 
         #     'hsv': [38, 76, 232]},
+        'yellow': {
+            'rgb': [[251, 202, 73], [251, 191, 43], [252, 189, 59], [253,192,70], [250,187,32], [252, 201, 32], [254, 255, 83], [253, 244, 45], [252, 230, 55], [252, 215, 41], [252, 204, 17], [253, 212, 52], [252, 228, 66]],
+            'hsv': [[39.5455, 70.4000, 98.0392], [45.0829, 79.7357, 89.0196]]},
         # 'light_yellow': {
         #     'rgb': [251, 230, 143], 
-        #     'hsv': [24, 110, 251]},
-        'yellow': {
-            'rgb': [[251, 202, 73], [251, 191, 43], [252, 189, 59], [253,192,70], [250,187,32], [252, 201, 32]],
-            'hsv': [[39.5455, 70.4000, 98.0392], [45.0829, 79.7357, 89.0196]]}
+        #     'hsv': [24, 110, 251]}
     }
     img_copy = img.copy()
     img_copy = cv2.GaussianBlur(img_copy, (17, 17), 5)
@@ -290,47 +290,41 @@ def get_legos_matrix(img):
                         m_legos[i].append(in_value)
                         m_legos[i].append(key)
                         break
-    # Lets build!!!
     my_legos = m_legos.copy()
     my_legos_ord = []
     for j in range(1,lego_rows+1):
         for i in range(1,lego_columns+1):
-            # print(i,j)
             for my_lego in my_legos:
                 if ( (my_lego[4][0] == i) and (my_lego[4][1] == j)):
                     print(my_lego)
                     my_legos_ord.append(my_lego)
     return my_legos_ord
 
-
 def main():
     photo = get_photo()
     legos = get_legos_matrix(photo)
-
     columnas=[]
     filas=[]
     color=[]
     profundidad=[]           
-                    
     for i in range(0, len(legos)):
         my_lego=legos[i]
         columnas.append(my_lego[4][0])
         filas.append(my_lego[4][1])
         # profundidad.append(my_lego[4][2])
         color.append(my_lego[6])
-
     zonas, colores = planificador(columnas, filas, profundidad, color)
     print(zonas)
     piezas = planificador_carga(colores)
     print(piezas)
-
     for pieza_seleccionada, zona_seleccionada in zip(piezas, zonas):
         pieza = PIEZAS_TOTAL[pieza_seleccionada]["Joints"]
         zona = ZONAS_TOTAL[zona_seleccionada]
         CogePieza(pieza, rtde_c, rtde_r)
         ConstruyePieza(zona, rtde_c, rtde_r)
-    
+    # Go home
     rtde_c.moveJ([1.59, -1.538, -0.06, -1.56, 0.014, 1.18], 0.15, 0.1)
+
 
 if __name__ == "__main__":
     main()
