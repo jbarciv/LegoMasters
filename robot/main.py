@@ -13,7 +13,9 @@ import matplotlib.pyplot as plt
 import cv2
 import pyrealsense2 as rs
 from copy import deepcopy
-
+import os
+import glob
+from skimage import io
 
 # Constants for robot connection
 ROBOT_IP = "192.168.56.20"
@@ -39,7 +41,7 @@ PIEZAS_TOTAL = {
     "P12": {"Joints": [141.74, -125.37, -63.82, -79.99, 88.94, 208.55], "Color": "red"},
     "P13": {"Joints": [135.67, -116.49, -78.05, -74.53, 89.01, 202.46], "Color": "red"},
     "P14": {"Joints": [128.49, -110.31, -87.18, -71.47, 89.11, 195.28], "Color": "red"},
-    "P15": {"Joints": [119.72, -116.35, -103.33, -49.17, 89.33, 186.5], "Color": "green"},
+    "P15": {"Joints": [119.46, -115.26, -100.3, -54.20, 89.40, 185.66], "Color": "green"},
     "P16": {"Joints": [128.55, -137.1, -43.33, -88.52, 89.18, 195.37], "Color": "none"},
     "P17": {"Joints": [122.03, -130.17, -55.77, -82.94, 89.28, 188.83], "Color": "none"},
     "P18": {"Joints": [114.45, -126.29, -62.44, -80.06, 89.42, 181.25], "Color": "blue"},
@@ -50,7 +52,7 @@ PIEZAS_TOTAL = {
 
 ZONAS_TOTAL = {
     1: [252.42, -91.07, -110.05, -68.63, 89.88, 227.38],
-    2: [258.87, -85.58, -115.84, -67.83, 89.84, 233.85],
+    2: [259.00, -84.66, -116.80, -66.85, 89.84, 233.98],
     3: [265.90, -80.54, -119.61, -69.60, 89.81, 240.88],
     4: [273.91, -75.74, -123.22, -70.82, 89.78, 248.89],
     5: [273.45, -84.41, -116.36, -68.98, 89.80, 338.42],
@@ -135,7 +137,28 @@ def get_photo():
             break
     pipe.stop()
     cv2.destroyAllWindows()
-    return color_image
+    images_path = "./images"
+    if not os.path.exists(images_path):
+        os.makedirs(images_path)
+        print(f"Folder '{images_path}' created.")
+    else:
+        pass
+    images = glob.glob("images/*.png")
+    img =[]
+    for image in images:
+        img.append(int(image[7:-4]))
+    img.sort()
+    if img == []:
+        num = 1
+    else:
+        num = img[-1] + 1
+    image_path = 'images/' + str(num) + '.png'
+    cv2.imwrite('images/' + str(num) + '.png', color_image)
+    if cv2.imread(image_path) is None:
+        print("error in saving!")
+    print("Image: ", num, "saved!")
+
+    return num
 
 def get_bounding_boxes(img):
     edges_r = cv2.Canny(img, 100, 200)
@@ -163,7 +186,9 @@ def get_bounding_boxes(img):
             legos.append([x, y, w, h])
     return legos
 
-def get_legos_matrix(img):
+def get_legos_matrix(num):
+    filepath = r'./images/'+str(num)+'.png'
+    img = io.imread(filepath)
     lego = get_bounding_boxes(img)
     xlegos = lego.copy()
     xlegos.sort(key=lambda x: x[0])
@@ -231,7 +256,7 @@ def get_legos_matrix(img):
             legos.append(legos_y[i][j])
     colors = {
         'blue': {
-            'rgb': [[13, 177, 200], [69, 187, 212],[39,175,200], [58, 188, 213], [78, 199, 234], [5, 157, 189], [37, 237, 253], [37, 229, 253], [45, 200, 237], [45, 192, 222], [56, 213, 253], [14, 215, 251], [18, 209, 250], [32, 205, 248], [24, 196, 234], [13, 197, 235], [2, 204, 251]],
+            'rgb': [[13, 177, 200], [69, 187, 212],[39,175,200], [58, 188, 213], [78, 199, 234], [5, 157, 189], [37, 237, 253], [37, 229, 253], [45, 200, 237], [45, 192, 222], [56, 213, 253], [14, 215, 251], [18, 209, 250], [32, 205, 248], [24, 196, 234], [13, 197, 235], [2, 204, 251], [31, 189, 221], [68, 236, 251], [80, 231, 251]],
             'hsv': [[193.3, 77.6, 98.04], [193.398, 58.19, 69.41]]},
         # 'light_blue': {
         #     'rgb': [191, 228, 231], 
@@ -249,13 +274,13 @@ def get_legos_matrix(img):
             'rgb': [[252, 129, 21], [246, 116, 16], [230, 112, 23], [254, 172, 21], [252, 123, 2], [254, 161, 8], [252, 142, 4], [252, 145, 20], [252, 148, 31]],
             'hsv': [[26.2722, 66.2745, 100.0000], [24.6729, 91.0638, 92.1569]]},
         'green': {
-            'rgb': [[158, 181, 57], [152, 168, 48], [162, 184, 79], [205, 233, 78], [197, 224, 81], [190, 207, 66], [176, 191, 46], [187, 202, 60], [202, 216, 51], [189, 204, 44], [172, 200, 64], [169, 198, 59]],
+            'rgb': [[158, 181, 57], [152, 168, 48], [162, 184, 79], [205, 233, 78], [197, 224, 81], [190, 207, 66], [176, 191, 46], [187, 202, 60], [202, 216, 51], [189, 204, 44], [172, 200, 64], [169, 198, 59], [145, 167, 35], [163, 184, 32], [203, 216, 40]],
             'hsv': [[63.8961, 38.6935, 78.0392], [69.8824, 68.0000, 49.0196]]},
         # 'light_green': {
         #     'rgb': [213, 232, 163], 
         #     'hsv': [38, 76, 232]},
         'yellow': {
-            'rgb': [[251, 202, 73], [251, 191, 43], [252, 189, 59], [253,192,70], [250,187,32], [252, 201, 32], [254, 255, 83], [253, 244, 45], [252, 230, 55], [252, 215, 41], [252, 204, 17], [253, 212, 52], [252, 228, 66]],
+            'rgb': [[251, 202, 73], [251, 191, 43], [252, 189, 59], [253,192,70], [250,187,32], [252, 201, 32], [254, 255, 83], [253, 244, 45], [252, 230, 55], [252, 215, 41], [252, 204, 17], [253, 212, 52], [252, 228, 66], [230, 180, 28]],
             'hsv': [[39.5455, 70.4000, 98.0392], [45.0829, 79.7357, 89.0196]]},
         # 'light_yellow': {
         #     'rgb': [251, 230, 143], 
@@ -281,7 +306,7 @@ def get_legos_matrix(img):
             for space, value in value.items():
                 if space == 'hsv':
                     continue
-                add = 10
+                add = 13
                 for in_value in value:
                     plus = [x + add for x in in_value]
                     minus = [x - add for x in in_value]
@@ -290,6 +315,7 @@ def get_legos_matrix(img):
                         m_legos[i].append(in_value)
                         m_legos[i].append(key)
                         break
+    print(m_legos)
     my_legos = m_legos.copy()
     my_legos_ord = []
     for j in range(1,lego_rows+1):
@@ -301,8 +327,8 @@ def get_legos_matrix(img):
     return my_legos_ord
 
 def main():
-    photo = get_photo()
-    legos = get_legos_matrix(photo)
+    num = get_photo()
+    legos = get_legos_matrix(num)
     columnas=[]
     filas=[]
     color=[]
@@ -313,6 +339,9 @@ def main():
         filas.append(my_lego[4][1])
         # profundidad.append(my_lego[4][2])
         color.append(my_lego[6])
+    print(columnas)
+    print(filas)
+    print(color)
     zonas, colores = planificador(columnas, filas, profundidad, color)
     print(zonas)
     piezas = planificador_carga(colores)
