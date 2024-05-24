@@ -14,6 +14,7 @@ import cv2
 import pyrealsense2 as rs
 from copy import deepcopy
 import os
+from datetime import datetime
 import glob
 from skimage import io
 import json
@@ -242,16 +243,10 @@ def analyze_image(frame):
         print(f"Folder '{images_path}' created.")
     else:
         pass
-    images = glob.glob("./tmp/*.png")
-    img_num =[]
-    for image in images:
-        img_num.append(int(image[6:-4]))
-    img_num.sort()
-    if img_num == []:
-        num = 1
-    else:
-        num = img_num[-1] + 1
-    image_path = './tmp/' + str(num) + '.png'
+    if which2analyze == 1:
+        image_path = './tmp/1.png'
+    elif which2analyze == 2:
+        image_path = './tmp/2.png'
     cv2.imwrite(image_path, frame)
     img = io.imread(image_path)
 
@@ -372,11 +367,11 @@ def analyze_image(frame):
         if which2analyze == 1:
             label_analyze.imgtk = imgtk
             label_analyze.configure(image=imgtk)
-            file_name = str(num) + "_1" + ".json"
+            file_name = "1.json"
         elif which2analyze == 2:
             label_robot.imgtk = imgtk
             label_robot.configure(image=imgtk)
-            file_name = str(num) + "_2" + ".json"
+            file_name = "2.json"
         with open("./tmp/"+file_name, 'w') as f:
             json.dump(legos_to_json, f)
     except:
@@ -392,29 +387,17 @@ def build(build_num, json_path):
     building = True
 
     if build_num == 0:
-        tmp_json = glob.glob(os.path.join(tmp_folder, "*.json"))
-        i = 0
-        for item in tmp_json:
-            print(item)
-            tmp_json[i] = int(item[6:-5])
-            i+=1
-        tmp_json.sort()
-        json_path = tmp_folder + "/" + str(tmp_json[-1]) + ".json"
-        png_path = tmp_folder + "/" + str(tmp_json[-1]) + ".png"
-        backup_json = glob.glob(os.path.join(backup_folder, "*.json"))
-        json_num =[]
-        for ijson in backup_json:
-            print(ijson)
-            json_num.append(int(ijson[17:-5]))
-        json_num.sort()
-        if json_num == []:
-            num = 1
-        else:
-            num = json_num[-1] + 1
-        new_json_path = backup_folder + "/" + str(num) + '.json'
-        new_png_path = backup_folder + "/" + str(num) + '.png'
-        shutil.copy(json_path, new_json_path)
-        shutil.copy(png_path, new_png_path)
+        current_time = datetime.now()
+        folder_name = current_time.strftime('%Y-%m-%d_%H-%M-%S')
+        new_folder = os.path.join(backup_folder, folder_name)
+        os.makedirs(new_folder)
+        for i in range(1,3):
+            end_1 = str(i) +'.json'
+            end_2 = str(i) +'.png'
+            new_json_path = new_folder + "/" + end_1
+            new_png_path = new_folder + "/" + end_2
+            shutil.copy("./tmp/" + end_1, new_json_path)
+            shutil.copy("./tmp/" + end_2, new_png_path)
     else:
         json_path = json_path[:-3]+"json"
     with open(json_path, 'r') as file:
