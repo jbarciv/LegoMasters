@@ -5,14 +5,9 @@ Authors: Micaela Cabrera, Jorge Guijarro
 Date: May 21, 2024
 """
 
-import rtde_control
-import rtde_receive
 import time
 import math
-import rtde_io
-
 from open_gripper import OpenGripper
-from close_gripper import CloseGripper
 
 def ConstruyePieza(Pieza,rtde_c,rtde_r):
         Zonas = {
@@ -34,7 +29,7 @@ def ConstruyePieza(Pieza,rtde_c,rtde_r):
         speed = [0, 0, -0.010, 0, 0, 0]
         rtde_c.moveUntilContact(speed)
         target_2 = rtde_r.getActualTCPPose()
-        target_2[2] -= 0.0045
+        target_2[2] -= 0.0047
         rtde_c.moveL(target_2, 0.01, 0.01, True)       
         time.sleep(2)
         OpenGripper()

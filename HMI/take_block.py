@@ -5,11 +5,8 @@ Authors: Micaela Cabrera, Jorge Guijarro
 Date: May 21, 2024
 """
 
-import rtde_control
-import rtde_receive
 import time
 import math
-import rtde_io
 
 from open_gripper import OpenGripper
 from close_gripper import CloseGripper
