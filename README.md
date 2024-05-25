@@ -102,9 +102,7 @@ alias myvenv='source ~/the_path_to_venv_folder/myvenv/bin/activate'
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-With the use of MediaPipe we have implemented a *driving drowsiness detection system*. It relies only on visual perception from a camera (potencially the use of the front phone camera). The systems expects to have a close vision of the driver and a daylight conditions. The systems has not been tested with IR cameras for a robust light conditions.
 
-[![Drowsiness Deteccion 1](./figs/1.gif)]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
