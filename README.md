@@ -56,7 +56,7 @@
 ## About The Project
 
 <div align="center">
-  <img src="./figs/compressed_2.gif" alt="Project Logo" width="500"/>
+  <img src="./figs/final.gif" alt="Project Logo" width="500"/>
 </div>
 <br />
 
