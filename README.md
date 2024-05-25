@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 ![GitHub contributors](https://img.shields.io/github/contributors/jbarciv/DrowsyDrive-Alert)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 <div align="center">
   <img src="./figs/logo_black.png" alt="Project Logo" width="500"/>
