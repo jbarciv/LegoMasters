@@ -55,7 +55,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-
+<div align="center">
+  <img src="./figs/compressed_2.gif" alt="Project Logo" width="500"/>
+</div>
+<br />
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
