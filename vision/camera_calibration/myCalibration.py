@@ -7,8 +7,7 @@
 #   - Camera: RealSense RGBD SR305
 #   - External links:
 #       -> https://github.com/niconielsen32/CameraCalibration/tree/main
-#       -> https://longervision.github.io/2017/03/16/ComputerVision/OpenCV/
-#          opencv-internal-calibration-chessboard/
+#       -> https://longervision.github.io/2017/03/16/ComputerVision/OpenCV/opencv-internal-calibration-chessboard/
 ###########################################################################
 
 import numpy as np
