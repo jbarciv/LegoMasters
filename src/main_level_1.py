@@ -20,12 +20,12 @@ import os
 import rtde_control
 import rtde_receive
 import shutil
-from take_block import CogePieza
-from build_block import ConstruyePieza
+from take_block import take_block
+from build_block import build_block
 
 ROBOT_IP = "192.168.56.20"
 
-PIEZAS_TOTAL = {
+BLOCKS = {
     "P1": {"Joints": [166,-109.71,-87.73,-72.22,88.69,232.80],"Color": "yellow" }, 
     "P2": {"Joints": [162.94,-96.7,-104.34,-68.56,88.67,229.74],"Color": "yellow"},
     "P3": {"Joints": [158.6,-84.55,-116.66,-68.29,88.68,225.43],"Color": "white"},
@@ -49,7 +49,7 @@ PIEZAS_TOTAL = {
     "P21": {"Joints": [107.06,-120.3,-72.26,-76.17,89.55,173.85],"Color": "none" }
 }
 
-ZONAS_TOTAL = {        
+ZONES = {        
     1: [252.42,-89.36,-105.45,-74.94,89.86,227.39],
     2: [259.15, -83.5, -111.08, -74.67, 89.82, 234.15],
     3: [266.22,-78.62,-114.85,-76.29,89.78,241.21],
@@ -89,35 +89,35 @@ COLORS = {
         'hsv': [[39.5455, 70.4000, 98.0392], [45.0829, 79.7357, 89.0196]]},
 }
 
-def planificador(columnas, filas, color):
-    tam=len(columnas)
-    zonas=[]
-    columnas_copy = columnas[:]
-    colores=[]
-    for j in range(len(filas)-1):
-        if filas[j] <= filas[j+1]:
-            zona = columnas_copy[j]
-            zonas.append(zona)
-            colores.append(color[j])
-    zona = columnas[tam-1]
-    colores.append(color[tam-1])
-    zonas.append(zona)
-    return zonas,colores
+def planner(columns, rows, color):
+    size = len(columns)
+    zones = []
+    columns_copy = columns[:]
+    colors = []
+    for j in range(len(rows) - 1):
+        if rows[j] <= rows[j + 1]:
+            zone = columns_copy[j]
+            zones.append(zone)
+            colors.append(color[j])
+    zone = columns[size - 1]
+    colors.append(color[size - 1])
+    zones.append(zone)
+    return zones, colors
 
-def planificador_carga(colores):
-    seleccion_piezas=[]
-    for i in range(len(colores)):
-        color_deseado = colores[i]
-        piezas_del_color = []
-        for pieza_clave, atributos in PIEZAS_TOTAL.items():
-            if isinstance(atributos, dict) and "Color" in atributos and atributos["Color"] == color_deseado:
-                piezas_del_color.append(pieza_clave)
-        for _ in range(len(seleccion_piezas)):
-            if piezas_del_color and piezas_del_color[0] in seleccion_piezas:
-                piezas_del_color.remove(piezas_del_color[0])
-        if piezas_del_color:
-            seleccion_piezas.append(piezas_del_color[0])
-    return seleccion_piezas
+def load_planner(colors):
+    selected_pieces = []
+    for i in range(len(colors)):
+        desired_color = colors[i]
+        pieces_of_color = []
+        for piece_key, attributes in BLOCKS.items():
+            if isinstance(attributes, dict) and "Color" in attributes and attributes["Color"] == desired_color:
+                pieces_of_color.append(piece_key)
+        for _ in range(len(selected_pieces)):
+            if pieces_of_color and pieces_of_color[0] in selected_pieces:
+                pieces_of_color.remove(pieces_of_color[0])
+        if pieces_of_color:
+            selected_pieces.append(pieces_of_color[0])
+    return selected_pieces
 
 def show_frames():
     global pipe, captured
@@ -400,15 +400,15 @@ def build(build_num, json_path):
             columnas.append(lego[0])
             filas.append(lego[1])
             color.append(lego[2])
-        zonas, colores = planificador(columnas, filas, color)
+        zonas, colores = planner(columnas, filas, color)
         print(zonas)
-        piezas = planificador_carga(colores)
+        piezas = load_planner(colores)
         print(piezas)
         for pieza_seleccionada, zona_seleccionada in zip(piezas, zonas):
-            pieza = PIEZAS_TOTAL[pieza_seleccionada]["Joints"]
-            zona = ZONAS_TOTAL[zona_seleccionada]
-            CogePieza(pieza, rtde_c, rtde_r)
-            ConstruyePieza(zona, rtde_c, rtde_r)
+            pieza = BLOCKS[pieza_seleccionada]["Joints"]
+            zona = ZONES[zona_seleccionada]
+            take_block(pieza, rtde_c, rtde_r)
+            build_block(zona, rtde_c, rtde_r)
     except:
         print("Error in building: impossible to start construction")    
     building = False
